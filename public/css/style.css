@@ -1,0 +1,60 @@
+.logout{
+display: block;
+width: 100%;
+padding: .25rem 1.5rem;
+clear: both;
+font-weight: 400;
+color: #212529;
+text-align: inherit;
+white-space: nowrap;
+background-color: #dc000000;
+border: 0;
+}
+.panel-default {
+  border-color: #ddd;
+  margin-top: 25px;
+}
+.navbar-laravel {
+  background-color: #2A3F54;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.28);
+}
+a {
+  color: #ffffff;
+}
+body {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #333;
+  background-color: #2A3F54;
+}
+.animasi {
+  /* font-size: 2em; */
+  width: 100%;
+  white-space:nowrap;
+  overflow:hidden;
+  /* -webkit-animation: typing 5s steps(70, end); */
+  animation: animasi-ketik 5s steps(70, end);
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  
+}
+
+@keyframes animasi-ketik{
+  from { width: 0; }
+}
+
+@-webkit-keyframes animasi-ketik{
+  from { width: 0; }
+}
+hr {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 0;
+  border-top: 2px solid rgba(0, 0, 0, 0.68);
+}
+.btn-primary {
+  color: #fff;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+  margin: 10px;
+}
