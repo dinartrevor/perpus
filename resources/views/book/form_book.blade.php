@@ -41,7 +41,7 @@
           <div class="form-group">
             <label for="isbn" class="col-md-3 control-label">Isbn</label>
             <div class="col-md-6">
-            <input type="text" id="isbn" autocomplete="off" name="isbn" class="form-control" value="{{ $booknomor }}" required>
+            <input type="text" id="isbn" autocomplete="off" name="isbn" onkeypress="return isNumberKey(event)" class="form-control"  required>
               <span class="text-block with-errors"></span>
             </div>
           </div>
@@ -63,7 +63,7 @@
         <div class="form-group">
             <label for="available" class="col-md-3 control-label">Tersedia</label>
             <div class="col-md-6">
-              <input type="text" id="available" autocomplete="off" name="available" class="form-control" autofocus required>
+              <input type="number" id="available" autocomplete="off" name="available" class="form-control" autofocus required>
               <span class="help-block with-errors"></span>
             </div>
         </div>
@@ -75,3 +75,15 @@
     </div>
   </div>
 </div>
+<script src="{{ asset('assets/jquery/jquery-1.12.4.min.js') }}"></script>
+<SCRIPT>
+  <!--
+  function isNumberKey(evt)
+  {
+      var charCode = (evt.which) ? evt.which : event.keyCode
+      if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+
+      return true;
+  }
+</script>

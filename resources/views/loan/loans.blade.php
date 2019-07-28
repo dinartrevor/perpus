@@ -135,6 +135,7 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{{ asset('assets/bootstrap/js/ie10-viewport-bug-workaround.js') }}"></script>
     @if($type && $type == 'return_loan')
+    <!-- pengembalian -->
     <script type="text/javascript">
     var table=
       $('#contact-table').DataTable({
@@ -157,6 +158,7 @@
       });
     </script>
     @else
+    <!-- peminjaman -->
     <script type="text/javascript">
     var table=
       $('#contact-table').DataTable({
@@ -298,10 +300,10 @@
                 })
                 }
               },
-              error : function($data){
+              error : function(){
                 swal({
                   title: 'Oops...',
-                  text: $data["responseJSON"]["errors"]["no_loan"][0],
+                  text: 'erro kamu error',
                   type: 'error',
                   timer: '2500'
                 })

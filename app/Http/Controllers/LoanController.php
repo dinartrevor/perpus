@@ -20,10 +20,9 @@ class LoanController extends Controller
     {
         $members = Member::all();
         $books = Book::all();
-        $loanNomor = time();
         $date = \Carbon\Carbon::now()->format('Y-m-d');
         $type = $request["type"];
-        return view('loan.loans', compact('type', 'members', 'books', 'loanNomor', 'date'));
+        return view('loan.loans', compact('type', 'members', 'books', 'date'));
     }
 
     /**
@@ -44,9 +43,6 @@ class LoanController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, array(
-            'no_loan' => 'required|unique:loans'    
-        ));
 
         $start_date = \Carbon\Carbon::parse($request['start_date'])->format('Y-m-d');
         $end_date = \Carbon\Carbon::parse($request['end_date'])->format('Y-m-d');
@@ -213,7 +209,7 @@ class LoanController extends Controller
                 return 
                     '<a onclick="editForm('. $loan->id .')" class="btn btn-primary btn-xs">Edit</a>';
             }
-            })->make(true);
+        })->make(true);
     }
 
     private function openDataPengembalian($loan)

@@ -17,7 +17,7 @@
                 <div class="form-group">
                   <label for="no_loan" class="col-md-3 control-label">Nomer Peminjaman</label>
                   <div class="col-md-6">
-                    <input type="text" id="no_loan" name="no_loan" class="form-control" value="{{ $loanNomor }}" disabled required>
+                    <input type="text" id="no_loan" name="no_loan" class="form-control" value="{{ rand(9999,12345)}}" readonly required>
                     <span class="help-block with-errors"></span>
                   </div>
                 </div>
@@ -86,7 +86,7 @@
                 <div class="form-group">
                   <label for="start_date" class="col-md-3 control-label">Tanggal Peminjaman</label>
                   <div class="col-md-6">
-                      <input type="text" id="start_date"  name="start_date" class="form-control" value="{{ $date }}" disabled required>
+                      <input type="text" id="start_date"  name="start_date" class="form-control" value="{{ $date }}" readonly required>
                       <span class="text-block with-errors"></span>
                   </div>
                 </div>
