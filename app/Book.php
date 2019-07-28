@@ -16,6 +16,15 @@ class Book extends Model
     {
         return $this->hasMany(Loan::class, 'book_id');
     }
+
+    public function isAvailable()
+    {
+        $status = false;
+        if ($this->available > 0) {
+            $status = true;
+        }
+        return $status;
+    }
     
 }
 

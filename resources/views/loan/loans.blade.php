@@ -101,11 +101,13 @@
                       <th>Nomer Peminjaman</th>
                       <th>Tanggal Peminjaman</th>
                       <th>Tanggal harus kembali</th>
-                      <th>Tanggal  Kembali</th>
-                      <th>Denda</th>
+                      @if($type && $type == 'return_loan')
+                        <th>Tanggal  Kembali</th>
+                        <th>Denda</th>
+                        <th>Denda Hilang</th>
+                      @endif
                       <th>Aksi</th>
                     </tr>
-                   
                   </thead>
                   <tbody></tbody>
                 </table>
@@ -120,6 +122,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="{{ asset('assets/jquery/jquery-1.12.4.min.js') }}"></script>
+    <script src="{{ asset('js/jquery-ui-14.js') }}"></script>
     <script src="{{ asset('assets/bootstrap/js/bootstrap.min.js') }}"></script>
 
     {{-- dataTables --}}
@@ -131,12 +134,13 @@
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{{ asset('assets/bootstrap/js/ie10-viewport-bug-workaround.js') }}"></script>
+    @if($type)
     <script type="text/javascript">
     var table=
       $('#contact-table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('api/loan') }}",
+        ajax: "{{ route('api/loan') }}" + "?type=",
         columns: [
           // {data: 'id', name: 'id'},
           {data: 'nomer_members', name: 'members'},
@@ -147,9 +151,32 @@
           {data: 'end_date', name: 'end_date'},
           {data: 'return_date', name: 'return_date'},
           {data: 'punishment', name: 'punishment'},
+          {data: 'denda_hilang', name: 'denda_hilang'},
           {data: 'action', name: 'action', orderable: false, searchable: false}
         ]
       });
+    </script>
+    @else
+    <script type="text/javascript">
+    var table=
+      $('#contact-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('api/loan') }}" + "?type=",
+        columns: [
+          // {data: 'id', name: 'id'},
+          {data: 'nomer_members', name: 'members'},
+          {data: 'members', name: 'members'},
+          {data: 'books', name: 'books'},
+          {data: 'no_loan', name: 'no_loan'},
+          {data: 'start_date', name: 'start_date'},
+          {data: 'end_date', name: 'end_date'},
+          {data: 'action', name: 'action', orderable: false, searchable: false}
+        ]
+      });
+    </script>
+    @endif
+      <script>
       function addForm() {
         save_method = "add";
         $('input[name=_method]').val('POST');
@@ -178,6 +205,7 @@
             $('#punishment').val(data.punishment);
             $('#no_member').val(data.members.no_member);
             $('#nama_anggota').val(data.member_id);
+            $('#book_loan').val(data.books.title)
           },
           error : function() {
             alert("tidak ada Data");
@@ -257,10 +285,10 @@
                 table.ajax.reload();
                 if ($data.status == 'error' ) {
                 swal({
-                  title: 'Berhasil Dude!',
-                  text: 'data berhasil',
+                  title: 'Buku tidak tersedia!',
+                  text: 'data error',
                   type: 'error',
-                  timer: '1500'
+                  timer: '2000'
                 })
                 } else {
                   swal({

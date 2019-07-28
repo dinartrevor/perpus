@@ -55,7 +55,20 @@
                       <span class="help-block with-errors"></span>
                     </div>
                   </div>
-                @endif
+                  <div class="form-group">
+                    <label for="punishment" class="col-md-3 control-label">Denda Hilang</label>
+                    <div class="col-md-6">
+                      <input type="text" id="denda_hilang" name="denda_hilang" class="form-control" autofocus value="0">
+                      <span class="help-block with-errors"></span>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                  <label for="select book" class="col-md-3 control-label">Buku</label>
+                  <div class="col-md-6">
+                    <input type="text" id="book_loan" disabled>
+                  </div>
+                </div>
+                @else
                 <div class="form-group">
                   <label for="select book" class="col-md-3 control-label">Pilih Buku</label>
                   <div class="col-md-6">
@@ -67,19 +80,20 @@
                     </select>
                   </div>
                 </div>
+                @endif
               </div>
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="start_date" class="col-md-3 control-label">Tanggal Peminjaman</label>
                   <div class="col-md-6">
-                      <input type="date" id="start_date"  name="start_date" class="form-control" value="{{ $date }}" required>
+                      <input type="text" id="start_date"  name="start_date" class="form-control" value="{{ $date }}" required>
                       <span class="text-block with-errors"></span>
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="end_date" class="col-md-3 control-label">Tanggal harus kembali</label>
                   <div class="col-md-6">
-                    <input type="date" id="end_date" name="end_date" class="form-control" autofocus required>
+                    <input type="text" id="end_date" name="end_date" class="form-control" autofocus required autocomplete="off">
                     <span class="help-block with-errors"></span>
                   </div>
                 </div>
@@ -95,8 +109,40 @@
     </div>
   </div>
     <script src="{{ asset('assets/jquery/jquery-1.12.4.min.js') }}"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
     <script>
+    $(document).ready(function(){
+      var startDate = new Date('01/01/2012');
+    var FromEndDate = new Date();
+    var ToEndDate = new Date();
+    ToEndDate.setDate(ToEndDate.getDate() + 365);
+
+    $('#start_date').datepicker({
+    weekStart: 1,
+    startDate: '01/01/2012',
+    endDate: FromEndDate,
+    autoclose: true
+    })
+    .on('changeDate', function (selected) {
+            startDate = new Date(selected.date.valueOf());
+            startDate.setDate(startDate.getDate(new Date(selected.date.valueOf())));
+            $('#end_date').datepicker('setStartDate', startDate);
+        });
+    $('#end_date')
+        .datepicker({
+            weekStart: 1,
+            startDate: startDate,
+            endDate: ToEndDate,
+            autoclose: true
+        })
+        .on('changeDate', function (selected) {
+            FromEndDate = new Date(selected.date.valueOf());
+            FromEndDate.setDate(FromEndDate.getDate(new Date(selected.date.valueOf())));
+            $('#start_date').datepicker('setEndDate', FromEndDate);
+        });
+    });
+
       $("#return_date").change(function(){
         console.log($(this).val());
         var end_date= $("#end_date").val();

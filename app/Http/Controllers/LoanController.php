@@ -91,7 +91,7 @@ class LoanController extends Controller
      */
     public function edit($id)
     {
-        $loan = Loan::with('members')->find($id);
+        $loan = Loan::with('members')->with('books')->find($id);
         return $loan;
     }
 
@@ -106,23 +106,47 @@ class LoanController extends Controller
     {
         $loan = Loan::find($id);
         $loan->member_id = $request['member_id'];
-        $loan->book_id = $request['book_id'];
         $loan->no_loan = $request['no_loan'];
         $loan->start_date = $request['start_date'];
         $loan->end_date = $request['end_date'];
         $loan->return_date = $request['return_date'];
         $loan->punishment = $request['punishment'];
-        if ($loan->update()) {
-		// update buku dengan menambah jumlah buku, jika sukses melakukan pengembalian
-		$book = Book::find($loan->book_id);
-		if ($book) {
-			$book->available += 1;
-			$book->save();
-		}
-	}
+        $loan->denda_hilang = $request['denda_hilang'];
 
-        return $loan;
+        $bookLoan = Book::find($loan->books->id);
+        if (!is_null($request['book_id'])) {
+            $book = Book::find($request['book_id']);
+        } else {
+            $book = $bookLoan;
+        }
 
+        if ($book && $book->isAvailable()) {
+
+            if ($request['denda_hilang'] <= 0) {
+                // jika pengembalian
+                if (!is_null($request['punishment'])) {
+                    $book->available += 1; 
+                    $book->save();
+                } else {
+                    // jika edit peminjaman
+                    if ($bookLoan->id != $book->id) {
+                        // buku yg pengganti akan dikurangi stoknya
+                        $bookLoan->available -= 1;
+                        if ($bookLoan->save()) {
+                            // buku yg lama dibalikan kembali stoknya
+                            $book->available += 1; 
+                            $book->save();
+                        }
+                    }
+                }
+            }
+            if (!is_null($request['book_id'])) {
+                $loan->book_id = $request['book_id'];
+            }
+            $loan->update();
+            
+            return $loan;
+        }
     }
 
     /**
@@ -136,11 +160,68 @@ class LoanController extends Controller
         Loan::destroy($id);
     }
 
-    public function apiLoan(){
+    public function apiLoan(Request $request){
         $loan = Loan::all();
 
-        return Datatables::of($loan)
+        if ($request['type']=='return_loan') {
+            return $this->openDataPengembalian($loan);
+        } else {
+            return $this->openDataLoan($loan);
+        }
+    }
 
+    // laporan pdf
+    public function pdfloan()
+    {
+        $loan=Loan::all();
+       
+        $pdf = PDF::loadView('loan.pdf_loan', compact('loan'));
+        $pdf->setPaper('a4','potrait');
+        return $pdf->stream();
+    }
+
+    // nomer anggota
+    public function findMember($id)
+    {
+        $member = Member::find($id);
+        return $member;
+    }
+
+    private function openDataLoan($loan)
+    {
+        return Datatables::of($loan)
+        ->addColumn('members', function (Loan $loan) {
+            return $loan->members->name;
+        })
+        ->addColumn('nomer_members', function (Loan $loan) {
+            return $loan->members->no_member;
+        })
+        ->addColumn('books', function (Loan $loan) {
+            return $loan->books->title;
+        })
+        ->addColumn('start_date', function (Loan $loan) {
+            return date('d-m-Y', strtotime($loan->start_date));
+        })
+        ->addColumn('end_date', function (Loan $loan) {
+            return date('d-m-Y', strtotime($loan->end_date));
+        })
+
+        ->addColumn('action', function($loan){
+        // jika sudah melakukan pengembalian jangan ada edit
+		if ($loan->return_date) {
+            return 
+                '<a onclick="deleteData('. $loan->id .')" class="btn btn-danger btn-xs">Delete</a>';
+		} else {
+            return 
+                '<a onclick="editForm('. $loan->id .')" class="btn btn-primary btn-xs">Edit</a>'.
+                '<a onclick="deleteData('. $loan->id .')" class="btn btn-danger btn-xs">Delete</a>';
+        }
+        })->make(true);
+    }
+
+    private function openDataPengembalian($loan)
+    {
+        return Datatables::of($loan)
         ->addColumn('members', function (Loan $loan) {
             return $loan->members->name;
         })
@@ -162,34 +243,20 @@ class LoanController extends Controller
         ->addColumn('punishment', function (Loan $loan) {
             return 'Rp. '.$loan->punishment;
         })
+        ->addColumn('denda_hilang', function (Loan $loan) {
+            return 'Rp. '.$loan->denda_hilang;
+        })
 
         ->addColumn('action', function($loan){
         // jika sudah melakukan pengembalian jangan ada edit
 		if ($loan->return_date) {
             return 
-                '<a onclick="deleteData('. $loan->id .')" class="btn-danger btn-xs">Delete</a>';
+                '<a onclick="deleteData('. $loan->id .')" class="btn btn-danger btn-xs">Delete</a>';
 		} else {
             return 
-                '<a onclick="editForm('. $loan->id .')" class="btn btn-primary">Edit</a>'.
-                '<a onclick="deleteData('. $loan->id .')" class="btn btn-danger">Delete</a>';
+                '<a onclick="editForm('. $loan->id .')" class="btn btn-primary btn-xs">Edit</a>'.
+                '<a onclick="deleteData('. $loan->id .')" class="btn btn-danger btn-xs">Delete</a>';
         }
         })->make(true);
-    }
-
-    // laporan pdf
-    public function pdfloan()
-    {
-        $loan=Loan::all();
-       
-        $pdf = PDF::loadView('loan.pdf_loan', compact('loan'));
-        $pdf->setPaper('a4','potrait');
-        return $pdf->stream();
-    }
-
-    // nomer anggota
-    public function findMember($id)
-    {
-        $member = Member::find($id);
-        return $member;
     }
 }
