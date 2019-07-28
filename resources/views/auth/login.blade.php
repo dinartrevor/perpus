@@ -23,7 +23,7 @@
               <div class="form-group row">
                 <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
                 <div class="col-md-6">
-                  <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }} password" name="password" placeholder="Masukkan Password" data-toggle="password"  required>
+                  <input id="password" type="password" id="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }} password" name="password" placeholder="Masukkan Password" data-toggle="password"  required>
                   @if ($errors->has('password'))
                     <span class="invalid-feedback" role="alert">
                       <strong>{{ $errors->first('password') }}</strong>
@@ -61,15 +61,10 @@
     </div>
   </div>
 @endsection
-
-
-<script src="{{ asset('js/jquery.min.js') }}"></script>
-
-
+<script src="{{ asset('assets/jquery/jquery-1.12.4.min.js') }}"></script>
 <script type="text/javascript">
   $(document).ready(function(){
       $('#show_password').click(function(){
-        
           $(this).is(':checked') ? $('#password').attr('type', 'text') : $('#password').attr('type', 'password');
       });
   });

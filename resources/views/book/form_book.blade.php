@@ -41,7 +41,7 @@
           <div class="form-group">
             <label for="isbn" class="col-md-3 control-label">Isbn</label>
             <div class="col-md-6">
-            <input type="text" id="isbn" autocomplete="off" name="isbn" class="form-control" required>
+            <input type="text" id="isbn" autocomplete="off" name="isbn" class="form-control" value="{{ $booknomor }}" required>
               <span class="text-block with-errors"></span>
             </div>
           </div>

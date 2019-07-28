@@ -37,6 +37,9 @@ class MemberController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, array(
+            'no_member' => 'required|unique:members'    
+        ));
         $data=[
             'no_member' => $request['no_member'],
             'name' => $request['name'],
@@ -79,6 +82,9 @@ class MemberController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->validate($request, array(
+            'no_member' => 'required|unique:members'    
+        ));
         $member = Member::find($id);
         $member->no_member = $request['no_member'];
         $member->name = $request['name'];
@@ -108,8 +114,8 @@ class MemberController extends Controller
         return Datatables::of($member)
         ->addColumn('action', function($member){
             return 
-                    '<a onclick="editForm('. $member->id .')" class="btn-primary btn-xs">Edit</a> | ' .
-                    '<a onclick="deleteData('. $member->id .')" class="btn-danger btn-xs">Delete</a>';
+                    '<a onclick="editForm('. $member->id .')" class=" btn btn-primary btn-xs">Edit</a>  ' .
+                    '<a onclick="deleteData('. $member->id .')" class=" btn btn-danger btn-xs">Delete</a>';
         })->make(true);
     }
     public function exportPDF()

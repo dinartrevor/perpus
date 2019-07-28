@@ -176,33 +176,7 @@
           }
         });
       }
-      // function showData(id) {
-      //   save_method = 'edit';
-      //   $('input[name=_method]').val('PUT');
-      //   $('#modal-form form')[0].reset();
-      //   $.ajax({
-      //     url: "{{ url('books') }}" + '/' + id,
-      //     type: "GET",
-      //     dataType: "JSON",
-      //     success: function(data) {
-      //       $('#modal-form').modal('show');
-      //       $('.modal-title').text('Book detail');
-      //       $('#id').val(data.id).attr('disabled', 'disabled');
-      //       $('#category_id').val(data.category_id).attr('disabled', 'disabled');
-      //       $('#title').val(data.title).attr('disabled', 'disabled');
-      //       $('#author').val(data.author).attr('disabled', 'disabled');
-      //       $('#isbn').val(data.isbn).attr('disabled', 'disabled');
-      //       $('#public_year').val(data.public_year).attr('disabled', 'disabled');
-      //       $('#publisher').val(data.publisher).attr('disabled', 'disabled');
-      //       $('#available').val(data.available).attr('disabled', 'disabled');
-      //       $('#btn-ok').attr('disabled', 'disabled');
-      //       $('#btn-cancel').attr('disabled', 'disabled');
-      //     },
-      //     error : function() {
-      //       alert("tidak ada Data");
-      //     }
-      //   });
-      // }
+  
       function deleteData(id){
         var popup = confirm("Apa kamu bener-bener ingin menghapus data ini?");
         var csrf_token = $('meta[name="csrf-token"]').attr('content');
@@ -283,10 +257,10 @@
                   timer: '1500'
                 })
               },
-              error : function(){
+              error : function($data){
                 swal({
                   title: 'Oops...',
-                  text: 'ada yang salah',
+                  text: $data["responseJSON"]["errors"]["isbn"][0],
                   type: 'error',
                   timer: '1500'
                 })

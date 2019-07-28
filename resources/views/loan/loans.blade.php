@@ -15,6 +15,7 @@
     <!-- Bootstrap core CSS -->
     <link href="{{ asset('assets/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
     {{-- dataTables --}}
     <link href="{{ asset('assets/datatables/css/dataTables.bootstrap.min.css') }}" rel="stylesheet">
@@ -93,10 +94,8 @@
               <div class="table-responsive">
                 <table id="contact-table" class="table table-striped">
                   <thead>
-                   
                     <tr>
-                   
-                     
+                      <th>Nomer Anggota</th>
                       <th>Anggota </th>
                       <th>Buku</th>
                       <th>Nomer Peminjaman</th>
@@ -140,6 +139,7 @@
         ajax: "{{ route('api/loan') }}",
         columns: [
           // {data: 'id', name: 'id'},
+          {data: 'nomer_members', name: 'members'},
           {data: 'members', name: 'members'},
           {data: 'books', name: 'books'},
           {data: 'no_loan', name: 'no_loan'},
@@ -176,6 +176,8 @@
             $('#end_date').val(data.end_date);
             $('#return_date').val(data.return_date);
             $('#punishment').val(data.punishment);
+            $('#no_member').val(data.members.no_member);
+            $('#nama_anggota').val(data.member_id);
           },
           error : function() {
             alert("tidak ada Data");
@@ -253,19 +255,28 @@
                 // console.log($data);
                 $('#modal-form').modal('hide');
                 table.ajax.reload();
+                if ($data.status == 'error' ) {
                 swal({
+                  title: 'Berhasil Dude!',
+                  text: 'data berhasil',
+                  type: 'error',
+                  timer: '1500'
+                })
+                } else {
+                  swal({
                   title: 'Berhasil Dude!',
                   text: 'data berhasil',
                   type: 'success',
                   timer: '1500'
                 })
+                }
               },
-              error : function(){
+              error : function($data){
                 swal({
                   title: 'Oops...',
-                  text: 'ada yang salah',
+                  text: $data["responseJSON"]["errors"]["no_loan"][0],
                   type: 'error',
-                  timer: '1500'
+                  timer: '2500'
                 })
               }
             });

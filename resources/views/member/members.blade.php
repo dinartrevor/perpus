@@ -92,7 +92,7 @@
                 <table id="contact-table" class="table table-striped">
                   <thead>
                     <tr>
-                      <th width="30">No</th>
+                      <th width="80">No Anggota</th>
                       <th>Nama</th>
                       <th>Kota</th>
                       <th>Alamat</th>
@@ -228,7 +228,6 @@
           if(!e.isDefaultPrevented()){
             // xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
             var id = $('#id').val();
-            console.log(save_method);
             if (save_method == 'add') url = "{{ url('members') }}";
             else url ="{{ url('members') . '/' }}" + id;
             $.ajax({
@@ -245,10 +244,10 @@
                   timer: '1500'
                 })
               },
-              error : function(){
+              error : function($data){
                 swal({
                   title: 'Oops...',
-                  text: 'ada yang salah',
+                  text: $data["responseJSON"]["errors"]["no_member"][0],
                   type: 'error',
                   timer: '1500'
                 })

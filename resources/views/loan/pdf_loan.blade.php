@@ -2,29 +2,27 @@
 <style type="text/css">
 		table tr td,
 		table tr th{
-			font-size: 9pt;
+			font-size: 8pt;
 		}
 </style>
-<table class='table table-bordered'>
-	<thead>
+<center><h3>Laporan Peminjaman dan Pengembalian </h3></center>
+<table class='table table-condensed'>
 			<tr>
-				<th>No</th>
+				<th width="80px">No Anggota</th>
         <th>Anggota</th>
         <th>Buku</th>
-        <th>Nomer Peminjaman</th>
-				<th>Tanggal Peminjaman</th>
+        <th width="120px">Nomer Peminjaman</th>
+				<th width="115px">Tanggal Peminjaman</th>
 				<th>Tanggal Harus Kembali </th>
 				<th>Tanggal kembali</th>
         <th>Denda</th>
-        
-				
 			</tr>
 		</thead>
 		<tbody>
 			@php $i=1 @endphp
 			@foreach($loan as $loans)
         <tr>
-          <td>{{ $i++ }}</td>
+          <td>{{ $loans->members->no_member }}</td>
           <td>{{$loans->members->name}}</td>
           <td>{{$loans->books->title}}</td>
           <td>{{$loans->no_loan}}</td>

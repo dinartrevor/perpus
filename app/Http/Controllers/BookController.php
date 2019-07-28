@@ -16,8 +16,10 @@ class BookController extends Controller
      */
     public function index()
     {
+
+        $booknomor = time();
         $categories = Category::all();
-        return view('book.books', compact('categories'));
+        return view('book.books', compact('categories','booknomor'));
     }
 
     /**
@@ -38,6 +40,9 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, array(
+            'isbn' => 'required|unique:books'    
+        ));
         $data=[
             'category_id' => $request['category_id'],
             'title' => $request['title'],
@@ -123,8 +128,8 @@ class BookController extends Controller
         ->addColumn('action', function($book){
             return 
                     
-                    '<a onclick="editForm('. $book->id .')" class="btn-primary btn-xs">Edit</a>|  ' .
-                    '<a onclick="deleteData('. $book->id .')" class="btn-danger btn-xs">Delete</a>';
+                    '<a onclick="editForm('. $book->id .')" class="btn btn-primary btn-xs">Edit</a>' .
+                    '<a onclick="deleteData('. $book->id .')" class="btn btn-danger btn-xs">Delete</a>';
         })->make(true);
     }
 

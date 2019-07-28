@@ -5,6 +5,7 @@
 			font-size: 9pt;
 		}
 </style>
+<center><h1>Laporan Buku </h1></center>
 <table class='table table-bordered'>
 		<thead>
 			<tr>
@@ -35,7 +36,7 @@
 			@endforeach
 		</tbody>
 	</table>
-  <h3>Total Buku {{ count($book)}}</h3>
+  <center><p class="text-muted">Total Buku {{ count($book)}}</p></center>
 
  
 	

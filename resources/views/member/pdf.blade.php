@@ -34,8 +34,7 @@
 		</tbody>
 	</table>
 	
- keterangan
- Total Anggota: {{ count($member)}}
+ <center><p class="text-muted"> Total Anggota {{ count($member)}}</p></center>
 
 
 

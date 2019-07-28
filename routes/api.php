@@ -18,3 +18,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::put('update_book/{id}', 'BookController@update')->name('api_update_book');
+
+Route::get('loan/anggota/{id}', 'LoanController@findMember')->name('api_find_member');

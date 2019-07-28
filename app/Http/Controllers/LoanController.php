@@ -44,14 +44,12 @@ class LoanController extends Controller
      */
     public function store(Request $request)
     {
-        // foreach($request["book_ids"] as $book_id) {
-        //     // Category::create(['name' => $category]);
+        $this->validate($request, array(
+            'no_loan' => 'required|unique:loans'    
+        ));
 
-
-        // }
         $start_date = \Carbon\Carbon::parse($request['start_date'])->format('Y-m-d');
         $end_date = \Carbon\Carbon::parse($request['end_date'])->format('Y-m-d');
-        // dd($start_date);
         $data=[
             'member_id' => $request['member_id'],
             'book_id' => $request['book_id'],
@@ -60,21 +58,18 @@ class LoanController extends Controller
             'end_date' => $end_date,
             'return_date' => null
         ];
-	    $loan = Loan::create($data);
-	    if ($loan->save()) { 
-            // update buku dengan mengurangi jumlah buku, jika sukses melakukan peminjaman
-            $book = Book::find($request['book_id']);
-            if ($book) {
+        $book = Book::find($request['book_id']);
+        if ($book && $book->available > 0) {
+            $loan = Loan::create($data);
+            if ($loan->save()) { 
+                // update buku dengan mengurangi jumlah buku, jika sukses melakukan peminjaman
                 $book->available -= 1;
                 $book->save();
- 		}
-	    return $loan;
-	    } else { 
-            return false;
+                return $loan;
+            }
         }
-        // return Loan::create($data);
-                // 'return_date' => $request['return_date'],
-                // 'punishment' => $request['punishment']
+        $data = array('message' => 'buku tidak tersedia', 'status' => 'error');
+        return $data;
     }
 
     /**
@@ -96,7 +91,7 @@ class LoanController extends Controller
      */
     public function edit($id)
     {
-        $loan = Loan::find($id);
+        $loan = Loan::with('members')->find($id);
         return $loan;
     }
 
@@ -140,12 +135,17 @@ class LoanController extends Controller
     {
         Loan::destroy($id);
     }
+
     public function apiLoan(){
         $loan = Loan::all();
 
         return Datatables::of($loan)
+
         ->addColumn('members', function (Loan $loan) {
             return $loan->members->name;
+        })
+        ->addColumn('nomer_members', function (Loan $loan) {
+            return $loan->members->no_member;
         })
         ->addColumn('books', function (Loan $loan) {
             return $loan->books->title;
@@ -157,32 +157,39 @@ class LoanController extends Controller
             return date('d-m-Y', strtotime($loan->end_date));
         })
         ->addColumn('return_date', function (Loan $loan) {
-            return !is_null($loan->return_date) ? date('d-m-Y', strtotime($loan->return_date)) : '-';
+            return !is_null($loan->return_date) ? date('d-m-y', strtotime($loan->return_date)) : '-';
         })
         ->addColumn('punishment', function (Loan $loan) {
             return 'Rp. '.$loan->punishment;
         })
 
         ->addColumn('action', function($loan){
-// jika sudah melakukan pengembalian jangan ada edit
+        // jika sudah melakukan pengembalian jangan ada edit
 		if ($loan->return_date) {
             return 
                 '<a onclick="deleteData('. $loan->id .')" class="btn-danger btn-xs">Delete</a>';
 		} else {
-		return 
-                    '<a onclick="editForm('. $loan->id .')" class="btn-primary btn-xs">Edit</a> | '.
-                    '<a onclick="deleteData('. $loan->id .')" class="btn-danger btn-xs">Delete</a>';
-		}
+            return 
+                '<a onclick="editForm('. $loan->id .')" class="btn btn-primary">Edit</a>'.
+                '<a onclick="deleteData('. $loan->id .')" class="btn btn-danger">Delete</a>';
+        }
         })->make(true);
     }
+
+    // laporan pdf
     public function pdfloan()
     {
-
         $loan=Loan::all();
        
         $pdf = PDF::loadView('loan.pdf_loan', compact('loan'));
         $pdf->setPaper('a4','potrait');
-
         return $pdf->stream();
+    }
+
+    // nomer anggota
+    public function findMember($id)
+    {
+        $member = Member::find($id);
+        return $member;
     }
 }

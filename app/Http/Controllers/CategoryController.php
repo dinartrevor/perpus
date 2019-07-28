@@ -99,8 +99,8 @@ class CategoryController extends Controller
         return Datatables::of($category)
         ->addColumn('action', function($category){
             return 
-                    '<a onclick="editForm('. $category->id .')" class="btn-primary btn-xs">Edit</a> | ' .
-                    '<a onclick="deleteData('. $category->id .')" class="btn-danger btn-xs">Delete</a>';
+                    '<a onclick="editForm('. $category->id .')" class="btn btn-primary btn-xs">Edit</a>' .
+                    '<a onclick="deleteData('. $category->id .')" class="btn btn-danger btn-xs">Delete</a>';
         })->make(true);
     }
     public function categorypdf()
