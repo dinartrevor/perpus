@@ -205,18 +205,15 @@ class LoanController extends Controller
         ->addColumn('end_date', function (Loan $loan) {
             return date('d-m-Y', strtotime($loan->end_date));
         })
-
         ->addColumn('action', function($loan){
-        // jika sudah melakukan pengembalian jangan ada edit
-		if ($loan->return_date) {
-            return 
-                '<a onclick="deleteData('. $loan->id .')" class="btn btn-danger btn-xs">Delete</a>';
-		} else {
-            return 
-                '<a onclick="editForm('. $loan->id .')" class="btn btn-primary btn-xs">Edit</a>'.
-                '<a onclick="deleteData('. $loan->id .')" class="btn btn-danger btn-xs">Delete</a>';
-        }
-        })->make(true);
+            // jika sudah melakukan pengembalian jangan ada edit
+            if ($loan->return_date) {
+                return '';
+            } else {
+                return 
+                    '<a onclick="editForm('. $loan->id .')" class="btn btn-primary btn-xs">Edit</a>';
+            }
+            })->make(true);
     }
 
     private function openDataPengembalian($loan)
@@ -250,12 +247,10 @@ class LoanController extends Controller
         ->addColumn('action', function($loan){
         // jika sudah melakukan pengembalian jangan ada edit
 		if ($loan->return_date) {
-            return 
-                '<a onclick="deleteData('. $loan->id .')" class="btn btn-danger btn-xs">Delete</a>';
+            return '';
 		} else {
             return 
-                '<a onclick="editForm('. $loan->id .')" class="btn btn-primary btn-xs">Edit</a>'.
-                '<a onclick="deleteData('. $loan->id .')" class="btn btn-danger btn-xs">Delete</a>';
+                '<a onclick="editForm('. $loan->id .')" class="btn btn-primary btn-xs">Edit</a>';
         }
         })->make(true);
     }

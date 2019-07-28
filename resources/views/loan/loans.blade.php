@@ -105,8 +105,8 @@
                         <th>Tanggal  Kembali</th>
                         <th>Denda</th>
                         <th>Denda Hilang</th>
+                        <th>Aksi</th>
                       @endif
-                      <th>Aksi</th>
                     </tr>
                   </thead>
                   <tbody></tbody>
@@ -134,7 +134,7 @@
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{{ asset('assets/bootstrap/js/ie10-viewport-bug-workaround.js') }}"></script>
-    @if($type)
+    @if($type && $type == 'return_loan')
     <script type="text/javascript">
     var table=
       $('#contact-table').DataTable({
@@ -170,8 +170,7 @@
           {data: 'books', name: 'books'},
           {data: 'no_loan', name: 'no_loan'},
           {data: 'start_date', name: 'start_date'},
-          {data: 'end_date', name: 'end_date'},
-          {data: 'action', name: 'action', orderable: false, searchable: false}
+          {data: 'end_date', name: 'end_date'}
         ]
       });
     </script>
