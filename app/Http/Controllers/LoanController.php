@@ -208,6 +208,8 @@ class LoanController extends Controller
             } else {
                 return 
                     '<a onclick="editForm('. $loan->id .')" class="btn btn-primary btn-xs">Edit</a>';
+                    
+            
             }
         })->make(true);
     }
